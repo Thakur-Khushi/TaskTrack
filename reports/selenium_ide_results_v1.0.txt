@@ -1,0 +1,19 @@
+﻿Selenium IDE (selenium-side-runner) results - TaskTrack v1.0 - 2026-11-18 19:49
+
+info: Finished test IDE-01 Register and login Success
+info: Finished test IDE-02 Invalid login shows error Success
+info: Finished test IDE-03 Add, complete and delete task Failure
+info: Finished test IDE-04 Search is case-insensitive Failure
+info: Finished test IDE-05 Blank (spaces) title rejected Failure
+info: Finished test IDE-06 Weak password rejected Failure
+      √ Running test IDE-01 Register and login (3259 ms)
+      √ Running test IDE-02 Invalid login shows error (1957 ms)
+      × Running test IDE-03 Add, complete and delete task (18670 ms)
+      × Running test IDE-04 Search is case-insensitive (8228 ms)
+      × Running test IDE-05 Blank (spaces) title rejected (18004 ms)
+      × Running test IDE-06 Weak password rejected (18590 ms)
+    Wait timed out after 15055ms during (fails on v1.0 -> BUG-03) waitForText:id=count-pending:0
+    Wait timed out after 5068ms during (fails on v1.0 -> BUG-02) waitForElementPresent:id=task-table:5000
+    Wait timed out after 15179ms during (fails on v1.0 -> BUG-01) waitForText:id=flash-error:Task title is required.
+    Wait timed out after 15177ms during (fails on v1.0 -> BUG-04) waitForText:id=flash-error:Password must be at least 6 characters.
+Tests:       4 failed, 2 passed, 6 total

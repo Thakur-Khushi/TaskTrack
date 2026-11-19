@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="4" skipped="3" tests="26" time="58.520" timestamp="2026-11-18T19:38:51.045166+05:30" hostname="LAPTOP-PC1N0BIE"><testcase classname="tests.test_auth" name="test_tc01_register_valid_user" time="4.016" /><testcase classname="tests.test_auth" name="test_tc02_register_duplicate_username" time="1.176" /><testcase classname="tests.test_auth" name="test_tc03_register_password_mismatch" time="0.581" /><testcase classname="tests.test_auth" name="test_tc04_register_short_password_rejected" time="0.636"><failure message="AssertionError: weak password was accepted&#10;assert '/login' == '/register'&#10;  &#10;  - /register&#10;  + /login">driver = &lt;selenium.webdriver.chrome.webdriver.WebDriver (session="41a09103d2f61240910fe52831e83cbd")&gt;
+base_url = 'http://127.0.0.1:5055'
+
+    def test_tc04_register_short_password_rejected(driver, base_url):
+        """TC-04 Password shorter than 6 characters is rejected (detects BUG-04)"""
+        page = RegisterPage(driver, base_url).open().register("dave", "123", "123")
+&gt;       assert page.current_path() == "/register", "weak password was accepted"
+E       AssertionError: weak password was accepted
+E       assert '/login' == '/register'
+E         
+E         - /register
+E         + /login
+
+tests\test_auth.py:35: AssertionError</failure></testcase><testcase classname="tests.test_auth" name="test_tc05_login_valid" time="1.022" /><testcase classname="tests.test_auth" name="test_tc06_login_wrong_password" time="0.923" /><testcase classname="tests.test_auth" name="test_tc07_logout" time="1.162" /><testcase classname="tests.test_auth" name="test_tc08_dashboard_requires_login" time="0.110" /><testcase classname="tests.test_tasks" name="test_tc09_add_task" time="1.341" /><testcase classname="tests.test_tasks" name="test_tc10_empty_title_blocked" time="7.421" /><testcase classname="tests.test_tasks" name="test_tc11_whitespace_title_rejected" time="2.155"><failure message="AssertionError: a blank task was created&#10;assert [&lt;selenium.we...3C56.e.409&quot;)&gt;] == []&#10;  &#10;  Left contains one more item: &lt;selenium.webdriver.remote.webelement.WebElement (session=&quot;41a09103d2f61240910fe52831e83cbd&quot;, element=&quot;f.A31F5BB46D96F187AE360B62DF8F1A3B.d.3321E6B490ADD36CBE9D7DE6EEAD3C56.e.409&quot;)&gt;&#10;  &#10;  Full diff:&#10;  - []&#10;  + [&#10;  +     &lt;selenium.webdriver.remote.webelement.WebElement (session=&quot;41a09103d2f61240910fe52831e83cbd&quot;, element=&quot;f.A31F5BB46D96F187AE360B62DF8F1A3B.d.3321E6B490ADD36CBE9D7DE6EEAD3C56.e.409&quot;)&gt;,&#10;  + ]">tasks_page = &lt;pages.tasks_page.TasksPage object at 0x0000028322B17220&gt;
+
+    def test_tc11_whitespace_title_rejected(tasks_page):
+        """TC-11 Title containing only spaces is rejected (detects BUG-01)"""
+        tasks_page.add_task("     ")
+&gt;       assert tasks_page.rows() == [], "a blank task was created"
+E       AssertionError: a blank task was created
+E       assert [&lt;selenium.we...3C56.e.409")&gt;] == []
+E         
+E         Left contains one more item: &lt;selenium.webdriver.remote.webelement.WebElement (session="41a09103d2f61240910fe52831e83cbd", element="f.A31F5BB46D96F187AE360B62DF8F1A3B.d.3321E6B490ADD36CBE9D7DE6EEAD3C56.e.409")&gt;
+E         
+E         Full diff:
+E         - []
+E         + [
+E         +     &lt;selenium.webdriver.remote.webelement.WebElement (session="41a09103d2f61240910fe52831e83cbd", element="f.A31F5BB46D96F187AE360B62DF8F1A3B.d.3321E6B490ADD36CBE9D7DE6EEAD3C56.e.409")&gt;,
+E         + ]
+
+tests\test_tasks.py:35: AssertionError</failure></testcase><testcase classname="tests.test_tasks" name="test_tc12_title_max_length" time="2.152" /><testcase classname="tests.test_tasks" name="test_tc13_mark_complete_and_undo" time="2.228" /><testcase classname="tests.test_tasks" name="test_tc14_delete_task_confirm" time="2.854" /><testcase classname="tests.test_tasks" name="test_tc15_delete_task_cancel" time="1.660" /><testcase classname="tests.test_tasks" name="test_tc16_summary_counters" time="2.246"><failure message="AssertionError: assert 3 == 2&#10; +  where 3 = count('pending')&#10; +    where count = &lt;pages.tasks_page.TasksPage object at 0x0000028322B60F10&gt;.count">tasks_page = &lt;pages.tasks_page.TasksPage object at 0x0000028322B60F10&gt;
+
+    def test_tc16_summary_counters(tasks_page):
+        """TC-16 Total / Completed / Pending counters are correct (detects BUG-03)"""
+        for t in ("Task A", "Task B", "Task C"):
+            tasks_page.add_task(t)
+        tasks_page.toggle("Task A")
+        assert tasks_page.count("total") == 3
+        assert tasks_page.count("completed") == 1
+&gt;       assert tasks_page.count("pending") == 2
+E       AssertionError: assert 3 == 2
+E        +  where 3 = count('pending')
+E        +    where count = &lt;pages.tasks_page.TasksPage object at 0x0000028322B60F10&gt;.count
+
+tests\test_tasks.py:79: AssertionError</failure></testcase><testcase classname="tests.test_tasks" name="test_tc17_search_exact_case" time="2.545" /><testcase classname="tests.test_tasks" name="test_tc18_search_case_insensitive" time="2.944"><failure message="AssertionError: assert [] == ['Maths Homework']&#10;  &#10;  Right contains one more item: 'Maths Homework'&#10;  &#10;  Full diff:&#10;  + []&#10;  - [&#10;  -     'Maths Homework',&#10;  - ]">tasks_page = &lt;pages.tasks_page.TasksPage object at 0x0000028322BFAE80&gt;
+
+    def test_tc18_search_case_insensitive(tasks_page):
+        """TC-18 Search ignores letter case (detects BUG-02)"""
+        tasks_page.add_task("Maths Homework")
+        tasks_page.search("homework")
+&gt;       assert tasks_page.titles() == ["Maths Homework"]
+E       AssertionError: assert [] == ['Maths Homework']
+E         
+E         Right contains one more item: 'Maths Homework'
+E         
+E         Full diff:
+E         + []
+E         - [
+E         -     'Maths Homework',
+E         - ]
+
+tests\test_tasks.py:95: AssertionError</failure></testcase><testcase classname="tests.test_tasks" name="test_tc19_search_no_results" time="1.643" /><testcase classname="tests.test_tasks" name="test_tc20_html_in_title_is_escaped" time="1.275" /><testcase classname="tests.test_tasks" name="test_tc21_tasks_are_private_per_user" time="3.800" /><testcase classname="tests.test_tasks" name="test_tc22_search_wildcards_are_literal[%]" time="2.481" /><testcase classname="tests.test_tasks" name="test_tc22_search_wildcards_are_literal[_]" time="2.604" /><testcase classname="tests.test_tasks" name="test_tc22_search_wildcards_are_literal[*]" time="1.759"><skipped type="pytest.xfail" message="EXP-01 open: search wildcards not escaped" /></testcase><testcase classname="tests.test_tasks" name="test_tc22_search_wildcards_are_literal[?]" time="2.416"><skipped type="pytest.xfail" message="EXP-01 open: search wildcards not escaped" /></testcase><testcase classname="tests.test_tasks" name="test_tc23_back_button_after_logout" time="4.773"><skipped type="pytest.xfail" message="EXP-02 open: dashboard cached after logout" /></testcase></testsuite></testsuites>

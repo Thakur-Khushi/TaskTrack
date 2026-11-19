@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}My Tasks - TaskTrack{% endblock %}
+{% block content %}
+<section class="stats">
+  <div class="stat"><span>Total</span><b id="count-total">{{ total }}</b></div>
+  <div class="stat"><span>Completed</span><b id="count-completed">{{ completed }}</b></div>
+  <div class="stat"><span>Pending</span><b id="count-pending">{{ pending }}</b></div>
+</section>
+
+<div class="card">
+  <h2>Add a task</h2>
+  <form id="add-form" method="post" action="{{ url_for('add_task') }}" class="row">
+    <input id="task-title" name="title" placeholder="What needs to be done?" maxlength="100" required>
+    <select id="task-priority" name="priority">
+      <option>Low</option><option selected>Medium</option><option>High</option>
+    </select>
+    <input id="task-due" name="due_date" type="date">
+    <button id="add-btn" type="submit">Add</button>
+  </form>
+</div>
+
+<div class="card">
+  <form id="search-form" method="get" action="{{ url_for('tasks') }}" class="row">
+    <input id="search-box" name="q" value="{{ q }}" placeholder="Search tasks">
+    <button id="search-btn" type="submit">Search</button>
+    {% if q %}<a id="clear-search" href="{{ url_for('tasks') }}">Clear</a>{% endif %}
+  </form>
+
+  {% if tasks %}
+  <table id="task-table">
+    <thead><tr><th>Done</th><th>Title</th><th>Priority</th><th>Due</th><th></th></tr></thead>
+    <tbody>
+    {% for t in tasks %}
+      <tr class="task-row {{ 'done' if t.done }}" data-id="{{ t.id }}">
+        <td>
+          <form method="post" action="{{ url_for('toggle_task', task_id=t.id) }}">
+            <button class="toggle-btn" title="Toggle complete">{{ '&#10003;'|safe if t.done else '&#9675;'|safe }}</button>
+          </form>
+        </td>
+        <td class="task-title">{{ t.title }}</td>
+        <td class="task-priority prio-{{ t.priority|lower }}">{{ t.priority }}</td>
+        <td class="task-due">{{ t.due_date or '-' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('delete_task', task_id=t.id) }}"
+                onsubmit="return confirm('Delete this task?');">
+            <button class="delete-btn danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p id="empty-msg">No tasks found.</p>
+  {% endif %}
+</div>
+{% endblock %}

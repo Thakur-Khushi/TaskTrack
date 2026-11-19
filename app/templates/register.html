@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Register - TaskTrack{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>Register</h1>
+  <form id="register-form" method="post">
+    <label for="username">Username</label>
+    <input id="username" name="username" required>
+    <label for="password">Password <small>(min 6 characters)</small></label>
+    <input id="password" name="password" type="password" required>
+    <label for="confirm">Confirm password</label>
+    <input id="confirm" name="confirm" type="password" required>
+    <button id="register-btn" type="submit">Register</button>
+  </form>
+  <p>Already registered? <a id="login-link" href="{{ url_for('login') }}">Login</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Login - TaskTrack{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>Login</h1>
+  <form id="login-form" method="post">
+    <label for="username">Username</label>
+    <input id="username" name="username" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" required>
+    <button id="login-btn" type="submit">Login</button>
+  </form>
+  <p>New user? <a id="register-link" href="{{ url_for('register') }}">Create an account</a></p>
+</div>
+{% endblock %}

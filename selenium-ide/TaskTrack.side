@@ -1,0 +1,737 @@
+{
+  "id": "e7b26b1d-5d30-433f-9715-a98f17ec1c11",
+  "version": "2.0",
+  "name": "TaskTrack",
+  "url": "http://127.0.0.1:5000",
+  "tests": [
+    {
+      "id": "0e061975-2e70-4624-be4d-b38d883174bd",
+      "name": "IDE-01 Register and login",
+      "commands": [
+        {
+          "id": "55503465-91fc-48ee-b0ca-f2771573e140",
+          "comment": "unique username for every run",
+          "command": "executeScript",
+          "target": "return 'ide' + Date.now()",
+          "targets": [],
+          "value": "user"
+        },
+        {
+          "id": "1bac9324-1526-4b4b-bb14-fd2292f43213",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "43c1afff-c450-42d8-ad89-e74527de559e",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "01895059-83c2-47ef-8686-c5a4be507376",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "ce39921a-8a28-4816-9a30-ca7a8d62f0c5",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "f3d4208f-bdb2-47e3-a921-c92e383bb557",
+          "comment": "",
+          "command": "type",
+          "target": "id=confirm",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "1c3e49d9-8e3f-4af9-8219-6243d180e37c",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4ad7aceb-0e94-4afb-816c-345351f502b1",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=flash-success",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "747efdd6-d46b-464d-b623-eedebe62bbf8",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "77c915dd-7b2e-4139-8e11-5599b3a4bd55",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "fbf6a531-852b-41ea-b281-0ad3c63cf9b2",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3350b6b9-215a-45dd-9848-81038b1d7abe",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=current-user",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "abe4f567-b7ef-4804-adfc-4539cfda6821",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=add-form",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "6e045261-892c-4ba0-aa96-007440679182",
+          "comment": "",
+          "command": "click",
+          "target": "id=logout-link",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "30822e95-0488-4643-9149-ea0b8b79d908",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=flash-success",
+          "targets": [],
+          "value": "You have been logged out."
+        }
+      ]
+    },
+    {
+      "id": "22dc92e3-3003-43b6-b361-0f935fc0f738",
+      "name": "IDE-02 Invalid login shows error",
+      "commands": [
+        {
+          "id": "3a48d477-a983-4c5f-831a-94236df25142",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ec0e87f3-5b42-4c00-aa41-9f2f98aaaa20",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "nobody"
+        },
+        {
+          "id": "5fa4c57f-585a-47e9-a633-0ede67104fcd",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "wrongpass"
+        },
+        {
+          "id": "ec45f00b-94f7-4a35-9834-5834b2842202",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aa6cd193-8cdf-4a4f-8551-4909dd24ced9",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=flash-error",
+          "targets": [],
+          "value": "Invalid username or password."
+        }
+      ]
+    },
+    {
+      "id": "70298292-f29f-47e2-aaee-e505f6c849a5",
+      "name": "IDE-03 Add, complete and delete task",
+      "commands": [
+        {
+          "id": "80a8b089-669f-43aa-926e-39287e8b9cbb",
+          "comment": "unique username for every run",
+          "command": "executeScript",
+          "target": "return 'ide' + Date.now()",
+          "targets": [],
+          "value": "user"
+        },
+        {
+          "id": "d39e3984-7d07-4199-867e-811aacef3acd",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fe08c7b4-09f5-4cfd-9675-2976fb25576e",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8d8a3263-497f-44f2-a1f4-2b2a616ab31c",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "540503dd-47d5-4600-8d0d-56493345fe37",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "b85d5655-db90-4023-8070-74cdf78392a9",
+          "comment": "",
+          "command": "type",
+          "target": "id=confirm",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "379a1f10-42dd-4396-bc8e-0217e48f523c",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2ff4ce4b-b049-469c-bc59-eff806006d3c",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=flash-success",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "38585812-468e-4c8d-9831-0db4bb1ac44e",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "0c0f5d55-f00e-43d5-b044-3fc9b8b73cef",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "4e3b1a27-97a3-498d-bbf4-a478ff171b63",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7d9d0bda-39b8-4f98-b18e-b22ebe1d920f",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=current-user",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "c356d154-a50e-49fe-a1ca-42fef98d97a4",
+          "comment": "",
+          "command": "type",
+          "target": "id=task-title",
+          "targets": [],
+          "value": "Prepare LP-IV viva"
+        },
+        {
+          "id": "b830ec99-69e3-421f-b7af-114859e8444a",
+          "comment": "",
+          "command": "select",
+          "target": "id=task-priority",
+          "targets": [],
+          "value": "label=High"
+        },
+        {
+          "id": "8a7f5e84-a55c-4a37-9f30-b34f0e1ff33c",
+          "comment": "",
+          "command": "click",
+          "target": "id=add-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "980ce8d0-4143-4610-a5ef-20aface1e06c",
+          "comment": "",
+          "command": "waitForText",
+          "target": "css=.task-title",
+          "targets": [],
+          "value": "Prepare LP-IV viva"
+        },
+        {
+          "id": "a5f14460-9820-4d4f-ab66-b7041e891ac0",
+          "comment": "",
+          "command": "waitForText",
+          "target": "css=.task-priority",
+          "targets": [],
+          "value": "High"
+        },
+        {
+          "id": "cd0b93e6-b2ab-4fdc-a2b3-1dba9a0be0ff",
+          "comment": "",
+          "command": "click",
+          "target": "css=.toggle-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "17ac73c2-328f-4894-92c2-0c6c01860bdb",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=count-completed",
+          "targets": [],
+          "value": "1"
+        },
+        {
+          "id": "a5abd149-6a53-463d-ae9d-6d8700de2614",
+          "comment": "fails on v1.0 -> BUG-03",
+          "command": "waitForText",
+          "target": "id=count-pending",
+          "targets": [],
+          "value": "0"
+        },
+        {
+          "id": "b0bff337-ed4b-4adc-9c2e-b0345ca50181",
+          "comment": "auto-accept the 'Delete this task?' dialog",
+          "command": "executeScript",
+          "target": "window.confirm = function () { return true; };",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "385d94d3-4263-40bb-8a2e-303cbcade8e4",
+          "comment": "",
+          "command": "click",
+          "target": "css=.delete-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a828eaa7-5a61-4bfd-9f51-bcbd04fd3a01",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=empty-msg",
+          "targets": [],
+          "value": "No tasks found."
+        }
+      ]
+    },
+    {
+      "id": "061207b2-18ae-4bdc-982c-d2acc3181be7",
+      "name": "IDE-04 Search is case-insensitive",
+      "commands": [
+        {
+          "id": "848d64e9-f05b-4946-82d9-7544d36c363e",
+          "comment": "unique username for every run",
+          "command": "executeScript",
+          "target": "return 'ide' + Date.now()",
+          "targets": [],
+          "value": "user"
+        },
+        {
+          "id": "1044a1e2-4971-451d-bc6f-059611d13fec",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bf52cc65-6945-4d15-bdda-f5d121b1c53d",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bfd4a73d-0933-4bcd-9fd3-a74e68b4de7e",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "31dae070-69f5-4e3d-b1fb-f544dad8916f",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "726e0bfa-5f70-45f0-84f9-cc25687993f3",
+          "comment": "",
+          "command": "type",
+          "target": "id=confirm",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "c94d8185-13ce-453f-820a-31edce67e19a",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e6dced7d-a9c8-4ee5-858a-9b727eb0f5b8",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=flash-success",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "5da4e554-ac9f-4ec6-96e6-c6cc76d03eaf",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "58b9367c-4c74-4c87-8704-a6e8b0bba4ec",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "9c954190-8239-4e57-9d77-37879019ed3e",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "49b4b2b5-61e1-4ce0-b5ec-3c7630223d90",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=current-user",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "37761de4-5443-4696-ac67-4cfa34036f9a",
+          "comment": "",
+          "command": "type",
+          "target": "id=task-title",
+          "targets": [],
+          "value": "Maths Homework"
+        },
+        {
+          "id": "9d511fdf-a462-4058-9194-1ad97293394b",
+          "comment": "",
+          "command": "click",
+          "target": "id=add-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a74f823f-60d0-4b7f-8471-b514b34d4cef",
+          "comment": "",
+          "command": "type",
+          "target": "id=search-box",
+          "targets": [],
+          "value": "homework"
+        },
+        {
+          "id": "fd634cc3-722d-4bd2-ac8c-493727a32b3d",
+          "comment": "",
+          "command": "click",
+          "target": "id=search-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5bbff12d-4065-4342-ba61-d655b7b9ff39",
+          "comment": "fails on v1.0 -> BUG-02",
+          "command": "waitForElementPresent",
+          "target": "id=task-table",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a62b7131-8c72-47d5-8b0a-bb5e0a27cbfa",
+          "comment": "",
+          "command": "waitForText",
+          "target": "css=.task-title",
+          "targets": [],
+          "value": "Maths Homework"
+        }
+      ]
+    },
+    {
+      "id": "caff62ff-85a3-4000-b45b-f0fda4b5ff48",
+      "name": "IDE-05 Blank (spaces) title rejected",
+      "commands": [
+        {
+          "id": "0878d7e4-2841-4ea3-aa08-016fba1d1110",
+          "comment": "unique username for every run",
+          "command": "executeScript",
+          "target": "return 'ide' + Date.now()",
+          "targets": [],
+          "value": "user"
+        },
+        {
+          "id": "0345828b-e97d-41d7-a77c-26d687969caa",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d01c1df6-4c64-4613-9e18-bf7e9c1520de",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d505e998-74c2-4efb-ab63-a182573a0305",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "bf14f551-a10a-4225-ba7f-045c95a0c17f",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "ae3a3994-f1f0-4dca-9305-5f9dc4488207",
+          "comment": "",
+          "command": "type",
+          "target": "id=confirm",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "116d4741-5832-49c8-b91a-e672868412a5",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "29485c08-ef84-4446-ab56-8502d2239ee2",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=flash-success",
+          "targets": [],
+          "value": "Registration successful. Please log in."
+        },
+        {
+          "id": "ddf2b369-ad32-438d-bc48-54f3ff9a72e0",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "04acb2b4-c1d0-49ba-9592-fe52ce2da332",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "secret123"
+        },
+        {
+          "id": "ee8f2b69-bfb6-4ad8-a0e1-14134e024aba",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e543d0e4-265c-48f0-8ddb-e98d3e3c4e45",
+          "comment": "",
+          "command": "waitForText",
+          "target": "id=current-user",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "1dbd3212-7d88-4169-9329-a6ea30a53bf8",
+          "comment": "IDE 'type' trims whitespace, so set the raw value with JS",
+          "command": "executeScript",
+          "target": "document.getElementById('task-title').value = '     ';",
+          "targets": [],
+          "value": "     "
+        },
+        {
+          "id": "8bb1b9c7-8c8d-47ca-9c26-8408a2254d61",
+          "comment": "",
+          "command": "click",
+          "target": "id=add-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5311989f-d633-420b-a8b0-777ca6b5c0ed",
+          "comment": "fails on v1.0 -> BUG-01",
+          "command": "waitForText",
+          "target": "id=flash-error",
+          "targets": [],
+          "value": "Task title is required."
+        },
+        {
+          "id": "62d049c0-d8fc-49d5-a0d7-5aea13bb46e1",
+          "comment": "",
+          "command": "waitForElementNotPresent",
+          "target": "id=task-table",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "f5386993-695f-4611-9ce8-14e5e9fc89a7",
+      "name": "IDE-06 Weak password rejected",
+      "commands": [
+        {
+          "id": "f1e2ffc8-dd32-4ad0-8a41-c92f12c93987",
+          "comment": "",
+          "command": "executeScript",
+          "target": "return 'weak' + Date.now()",
+          "targets": [],
+          "value": "user"
+        },
+        {
+          "id": "d5884351-a537-4dee-bbb5-059a4b3b0759",
+          "comment": "",
+          "command": "open",
+          "target": "/register",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6f2623a2-85c8-453a-ae32-4f71abcfc282",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "${user}"
+        },
+        {
+          "id": "08cb69a8-bb7f-4369-9005-4c2dff4f0a90",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "123"
+        },
+        {
+          "id": "4a3f9603-ac5e-4060-817e-7525d5f29460",
+          "comment": "",
+          "command": "type",
+          "target": "id=confirm",
+          "targets": [],
+          "value": "123"
+        },
+        {
+          "id": "5cb68e71-ccd3-471b-8b75-1b7b32ad4a53",
+          "comment": "",
+          "command": "click",
+          "target": "id=register-btn",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "af64494f-9b5e-4110-9303-2e71e644fb51",
+          "comment": "fails on v1.0 -> BUG-04",
+          "command": "waitForText",
+          "target": "id=flash-error",
+          "targets": [],
+          "value": "Password must be at least 6 characters."
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "7525e618-e1d8-4110-b40a-b807de29cc80",
+      "name": "TaskTrack Regression (IDE)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "0e061975-2e70-4624-be4d-b38d883174bd",
+        "22dc92e3-3003-43b6-b361-0f935fc0f738",
+        "70298292-f29f-47e2-aaee-e505f6c849a5",
+        "061207b2-18ae-4bdc-982c-d2acc3181be7",
+        "caff62ff-85a3-4000-b45b-f0fda4b5ff48",
+        "f5386993-695f-4611-9ce8-14e5e9fc89a7"
+      ]
+    }
+  ],
+  "urls": [
+    "http://127.0.0.1:5000/"
+  ],
+  "plugins": []
+}
