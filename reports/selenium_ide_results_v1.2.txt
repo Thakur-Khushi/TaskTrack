@@ -1,0 +1,15 @@
+Selenium IDE (selenium-side-runner) results - TaskTrack v1.2 - 2026-11-24 13:44
+
+info: Finished test IDE-01 Register and login Success
+info: Finished test IDE-02 Invalid login shows error Success
+info: Finished test IDE-03 Add, complete and delete task Success
+info: Finished test IDE-04 Search is case-insensitive Success
+info: Finished test IDE-05 Blank (spaces) title rejected Success
+info: Finished test IDE-06 Weak password rejected Success
+      √ Running test IDE-01 Register and login (3752 ms)
+      √ Running test IDE-02 Invalid login shows error (2026 ms)
+      √ Running test IDE-03 Add, complete and delete task (3944 ms)
+      √ Running test IDE-04 Search is case-insensitive (3722 ms)
+      √ Running test IDE-05 Blank (spaces) title rejected (3273 ms)
+      √ Running test IDE-06 Weak password rejected (2046 ms)
+Tests:       6 passed, 6 total

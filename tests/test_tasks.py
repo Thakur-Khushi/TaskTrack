@@ -1,11 +1,12 @@
 """Regression tests - Features F3 Add, F4 Complete, F5 Delete, F6 Search, F7 Summary."""
-import os
+from datetime import date, timedelta
 
 import pytest
 from selenium.webdriver.common.by import By
 
 from pages.login_page import LoginPage
 from pages.register_page import RegisterPage
+from sut import BUILD_LEVEL, open_until_v12
 
 pytestmark = pytest.mark.regression
 
@@ -14,11 +15,12 @@ pytestmark = pytest.mark.regression
 @pytest.mark.smoke
 def test_tc09_add_task(tasks_page):
     """TC-09 Adding a task shows it in the list with priority and due date"""
-    tasks_page.add_task("Submit LP-IV journal", "High", "2026-12-01")
+    due = (date.today() + timedelta(days=30)).isoformat()  # future date: v1.2 rejects past ones
+    tasks_page.add_task("Submit LP-IV journal", "High", due)
     assert "Task added" in tasks_page.flash("success")
     row = tasks_page.row_for("Submit LP-IV journal")
     assert row.find_element(By.CLASS_NAME, "task-priority").text == "High"
-    assert row.find_element(By.CLASS_NAME, "task-due").text == "2026-12-01"
+    assert row.find_element(By.CLASS_NAME, "task-due").text == due
 
 
 def test_tc10_empty_title_blocked(tasks_page):
@@ -121,11 +123,11 @@ def test_tc21_tasks_are_private_per_user(tasks_page, driver, base_url):
 
 # ---------------------------------------------------------------- Added after exploratory session
 # These reproduce defects found during exploratory testing (docs/EXPLORATORY_TESTING.md).
-# They stay marked xfail until the defects are fixed; strict=True makes the run
-# flag them (XPASS -> failure) once a fix lands, so the marker gets removed.
-FIXED = os.environ.get("FIX_BUGS") == "1"
-# v1.0 uses SQL GLOB (so * and ? act as wildcards); v1.1 uses LIKE (so % and _ do).
-_BAD = {"%", "_"} if FIXED else {"*", "?"}
+# They are xfail(strict=True) on the builds where the defect is open (v1.0, v1.1) and
+# normal tests on v1.2, where it is fixed. strict=True turns an unexpected pass red.
+# v1.0 uses SQL GLOB (so * and ? act as wildcards); v1.1 uses LIKE (so % and _ do);
+# v1.2 escapes them, so none of the four should match.
+_BAD = ({"*", "?"}, {"%", "_"}, set())[BUILD_LEVEL]
 _EXP01 = pytest.mark.xfail(strict=True, reason="EXP-01 open: search wildcards not escaped")
 
 
@@ -138,10 +140,18 @@ def test_tc22_search_wildcards_are_literal(tasks_page, wildcard):
     assert tasks_page.titles() == []
 
 
-@pytest.mark.xfail(strict=True, reason="EXP-02 open: dashboard cached after logout")
+@open_until_v12("EXP-02 open: dashboard cached after logout")
 def test_tc23_back_button_after_logout(tasks_page):
     """TC-23 Browser Back after logout must not show the dashboard (EXP-02)"""
     tasks_page.add_task("Private data")
     tasks_page.logout()
     tasks_page.driver.back()
     assert not tasks_page.driver.find_elements(By.ID, "add-form")
+
+
+@open_until_v12("EXP-04 open: past due dates accepted")
+def test_tc24_past_due_date_rejected(tasks_page):
+    """TC-24 A due date in the past is rejected (EXP-04)"""
+    tasks_page.add_task("Overdue already", due="2001-01-01")
+    assert tasks_page.rows() == [], "task with a past due date was created"
+    assert "Due date cannot be in the past" in tasks_page.flash("error")

@@ -6,23 +6,22 @@ Command-line options:
   --headed                 show the browser window (default: headless)
   --sut-url URL            test an already-running server instead of auto-starting one
 Environment:
-  FIX_BUGS=1               auto-start the fixed build v1.1 (default: v1.0 with seeded bugs)
+  FIX_BUGS=0|1|2           build to auto-start: v1.0 (default, seeded bugs), v1.1, v1.2
+  CHROME_BIN=path          use this Chrome binary (set by CI)
+The auto-started server always gets TESTING=1, so the /__reset hook exists on every build.
 """
 import os
-import subprocess
 import sys
-import tempfile
-import time
 import urllib.request
 
 import pytest
 from selenium import webdriver
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(TESTS_DIR)
 sys.path.insert(0, TESTS_DIR)
+from sut import BUILD, start_server  # noqa: E402
+
 PORT = 5055
-BUILD = "1.1" if os.environ.get("FIX_BUGS") == "1" else "1.0"
 
 
 def pytest_addoption(parser):
@@ -38,20 +37,10 @@ def base_url(request):
     if url:
         yield url.rstrip("/")
         return
-    db = os.path.join(tempfile.gettempdir(), "tasktrack_test.db")
-    env = dict(os.environ, PORT=str(PORT), TASKTRACK_DB=db)
-    proc = subprocess.Popen([sys.executable, os.path.join(ROOT, "app", "app.py")], env=env,
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    url = "http://127.0.0.1:%d" % PORT
-    for _ in range(50):
-        try:
-            urllib.request.urlopen(url + "/login", timeout=1)
-            break
-        except Exception:
-            time.sleep(0.2)
-    else:
-        proc.kill()
-        pytest.exit("TaskTrack server did not start")
+    try:
+        proc, url = start_server(PORT, testing=True)
+    except RuntimeError as e:
+        pytest.exit(str(e))
     yield url
     proc.terminate()
 
@@ -73,6 +62,11 @@ def browser_driver(request):
     })
     opts.add_argument("--disable-features=PasswordLeakDetection,PasswordManagerOnboarding")
     opts.add_argument("--guest")
+    if name == "chrome" and os.environ.get("CHROME_BIN"):
+        opts.binary_location = os.environ["CHROME_BIN"]
+    if os.environ.get("CI"):  # Linux CI runners: no sandbox, small /dev/shm
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-dev-shm-usage")
     # Selenium Manager (built into Selenium 4.6+) downloads the matching driver automatically.
     drv = webdriver.Edge(options=opts) if name == "edge" else webdriver.Chrome(options=opts)
     drv.implicitly_wait(1)

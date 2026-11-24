@@ -1,0 +1,107 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  selenium:
+    name: Selenium suite (${{ matrix.build }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - fix_bugs: "0"
+            build: v1.0
+          - fix_bugs: "1"
+            build: v1.1
+          - fix_bugs: "2"
+            build: v1.2
+    env:
+      FIX_BUGS: ${{ matrix.fix_bugs }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Install requirements
+        run: python -m pip install -r requirements.txt
+
+      # How v1.0 is handled:
+      # v1.0 is the build with the four seeded bugs, so TC-04, TC-11, TC-16 and TC-18
+      # are SUPPOSED to fail there. Instead of continue-on-error (which would also hide
+      # any new, unexpected failure on v1.0), the v1.0 job ignores pytest's exit code
+      # and the next step checks the JUnit XML: it passes only if exactly those four
+      # tests failed and there were no errors. v1.1 and v1.2 must pass outright
+      # (expected xfails are fine; an XPASS fails the run because of strict=True).
+      - name: Run test suite (headless Chrome)
+        shell: bash
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: |
+          mkdir -p reports
+          set +e
+          python -m pytest --html=reports/report_ci.html --self-contained-html --junitxml=reports/junit_ci.xml
+          code=$?
+          set -e
+          if [ "$FIX_BUGS" = "0" ]; then
+            echo "pytest exit code $code on v1.0; failures are checked in the next step"
+            exit 0
+          fi
+          exit $code
+
+      - name: Check v1.0 fails exactly the seeded-bug tests
+        if: matrix.fix_bugs == '0'
+        shell: python
+        run: |
+          import sys
+          import xml.etree.ElementTree as ET
+
+          expected = {
+              "tests.test_auth::test_tc04_register_short_password_rejected",   # BUG-04
+              "tests.test_tasks::test_tc11_whitespace_title_rejected",         # BUG-01
+              "tests.test_tasks::test_tc16_summary_counters",                  # BUG-03
+              "tests.test_tasks::test_tc18_search_case_insensitive",           # BUG-02
+          }
+          root = ET.parse("reports/junit_ci.xml").getroot()
+          failed, errored = set(), set()
+          for case in root.iter("testcase"):
+              name = "%s::%s" % (case.get("classname"), case.get("name"))
+              if case.find("failure") is not None:
+                  failed.add(name)
+              if case.find("error") is not None:
+                  errored.add(name)
+          print("failed :", sorted(failed))
+          print("errored:", sorted(errored))
+          ok = True
+          if failed - expected:
+              print("::error::Unexpected failures on v1.0:", sorted(failed - expected))
+              ok = False
+          if expected - failed:
+              print("::error::Seeded bugs no longer detected on v1.0:", sorted(expected - failed))
+              ok = False
+          if errored:
+              print("::error::Tests errored on v1.0:", sorted(errored))
+              ok = False
+          sys.exit(0 if ok else 1)
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.build }}
+          path: |
+            reports/report_ci.html
+            reports/junit_ci.xml
+          if-no-files-found: warn

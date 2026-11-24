@@ -11,7 +11,13 @@
     <span class="brand">TaskTrack <small id="app-version">v{{ version }}</small></span>
     {% if username %}
       <span class="user">Hi, <b id="current-user">{{ username }}</b>
-        <a id="logout-link" href="{{ url_for('logout') }}">Logout</a></span>
+        {% if post_logout %}
+        <form id="logout-form" class="inline-form" method="post" action="{{ url_for('logout') }}">
+          {{ csrf_input() }}<button id="logout-link" class="link-btn" type="submit">Logout</button>
+        </form>
+        {% else %}
+        <a id="logout-link" href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}</span>
     {% endif %}
   </header>
   <main class="container">

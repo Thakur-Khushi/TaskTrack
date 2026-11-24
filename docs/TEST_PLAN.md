@@ -4,14 +4,14 @@
 |---|---|
 | Project | TaskTrack – a small web-based task manager (Mini Project, LP-IV) |
 | Document | Test Plan v1.0 |
-| Builds under test | v1.0 (initial release) and v1.1 (bug-fix release) |
+| Builds under test | v1.0 (initial release), v1.1 (bug-fix release) and v1.2 (exploratory + security fixes) |
 | Test types | Functional, regression, smoke, exploratory, basic security |
 | Tools | Selenium WebDriver 4 (Python), Selenium IDE, pytest, pytest-html |
 
 ---
 
 ## 1. Objective
-Verify that TaskTrack's features work as specified. Find and classify defects. Confirm through regression testing that the fixes in v1.1 do not break features that already worked.
+Verify that TaskTrack's features work as specified. Find and classify defects. Confirm through regression testing that the fixes in v1.1 and v1.2 do not break features that already worked.
 
 ## 2. System environment / platform
 
@@ -50,7 +50,7 @@ Performance/load testing, mobile browsers, password reset (not implemented), and
 | Level / type | How | Tool |
 |---|---|---|
 | Smoke | 3 critical-path tests (`-m smoke`) on every build | WebDriver + pytest |
-| Functional + regression | 26 automated test cases covering F1–F8, run on v1.0 and v1.1 | WebDriver + pytest (Page Object Model) |
+| Functional + regression | 27 automated test cases (30 runs) covering F1–F8, run on v1.0, v1.1 and v1.2; also in CI on every push | WebDriver + pytest (Page Object Model) |
 | Record & playback | 6 recorded scenarios | Selenium IDE (`TaskTrack.side`) |
 | Exploratory | Session-based, time-boxed (charters CH-1…CH-7) | Manual, plus `explore_probe.py` helper |
 | Cross-browser | Smoke suite with `--browser edge` | WebDriver |
@@ -84,6 +84,12 @@ Techniques used for test design: equivalence partitioning (valid/invalid passwor
 | TC-21 | F8 | Second user logs in | Does not see the first user's tasks | Security |
 | TC-22 | F6 | Search `%`, `_`, `*`, `?` | Treated literally (no match) | Added from exploratory |
 | TC-23 | F2 | Browser Back after logout | Dashboard not shown | Added from exploratory |
+| TC-24 | F3 | Add task with due date 2001-01-01 | Rejected: "Due date cannot be in the past." | Added from exploratory (EXP-04) |
+| TC-25 | F8 | Start a second server without `TESTING=1`; `POST /__reset` | 404 – hook not available | Added from exploratory (EXP-03) |
+| TC-26 | F8 | Raw HTTP `POST /tasks/add` with the session cookie but no CSRF token | 400; no task created | Security (SEC-01) |
+| TC-27 | F2 | `GET /logout` (raw request and in the browser) | 405; user stays logged in | Security (SEC-02) |
+
+TC-22 … TC-27 reproduce defects that are open in v1.0/v1.1. They are marked `xfail(strict=True)` on those builds and run as normal tests on v1.2.
 
 ## 6. Bug taxonomy
 
@@ -96,7 +102,7 @@ Every defect is classified on three axes: **category** (what kind of fault), **s
 | FUN | Functional | Feature does not do what the requirement says | Search is case-sensitive (BUG-02) |
 | VAL | Input validation | Bad input is accepted, or good input is rejected | Whitespace title accepted (BUG-01), past due date (EXP-04) |
 | LOG | Logic / calculation | Wrong computation or business rule | Pending counter wrong (BUG-03) |
-| SEC | Security | Authentication, authorization, data exposure | Weak password accepted (BUG-04), unprotected reset hook (EXP-03) |
+| SEC | Security | Authentication, authorization, data exposure | Weak password accepted (BUG-04), unprotected reset hook (EXP-03), no CSRF protection (SEC-01) |
 | SES | Session / state | Problems with login state, caching, navigation | Back button after logout (EXP-02) |
 | UI | User interface / cosmetic | Layout, labels, text, alignment | – |
 | USA | Usability | Works, but confusing or inconvenient | Duplicate titles allowed (EXP-05) |

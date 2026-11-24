@@ -10,6 +10,7 @@
 <div class="card">
   <h2>Add a task</h2>
   <form id="add-form" method="post" action="{{ url_for('add_task') }}" class="row">
+    {{ csrf_input() }}
     <input id="task-title" name="title" placeholder="What needs to be done?" maxlength="100" required>
     <select id="task-priority" name="priority">
       <option>Low</option><option selected>Medium</option><option>High</option>
@@ -34,6 +35,7 @@
       <tr class="task-row {{ 'done' if t.done }}" data-id="{{ t.id }}">
         <td>
           <form method="post" action="{{ url_for('toggle_task', task_id=t.id) }}">
+            {{ csrf_input() }}
             <button class="toggle-btn" title="Toggle complete">{{ '&#10003;'|safe if t.done else '&#9675;'|safe }}</button>
           </form>
         </td>
@@ -43,6 +45,7 @@
         <td>
           <form method="post" action="{{ url_for('delete_task', task_id=t.id) }}"
                 onsubmit="return confirm('Delete this task?');">
+            {{ csrf_input() }}
             <button class="delete-btn danger">Delete</button>
           </form>
         </td>

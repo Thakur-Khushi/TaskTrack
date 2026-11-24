@@ -4,6 +4,7 @@
 <div class="card narrow">
   <h1>Register</h1>
   <form id="register-form" method="post">
+    {{ csrf_input() }}
     <label for="username">Username</label>
     <input id="username" name="username" required>
     <label for="password">Password <small>(min 6 characters)</small></label>
